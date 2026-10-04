@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>普林斯頓 - 班級資訊網</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #89CFF0;
+            --soft-blue: #E6F2FF;
+            --dark-blue: #2B547E;
+            --accent-yellow: #FFF3CD;
+            --card-shadow: 0 8px 20px rgba(137, 207, 240, 0.15);
+            --radius-lg: 18px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: #F4F9FF;
+            color: #333;
+            padding-bottom: 70px;
+        }
+
+        /* 頂部 Header */
+        header {
+            background: linear-gradient(135deg, #B9E3FF 0%, #89CFF0 100%);
+            color: white;
+            padding: 24px 20px 20px;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 12px rgba(137, 207, 240, 0.3);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* 主內容區塊 */
+        main {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* 分頁切換 Tab Navigator */
+        .nav-tabs {
+            display: flex;
+            background: white;
+            padding: 6px;
+            border-radius: 50px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #666;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(137, 207, 240, 0.4);
+        }
+
+        /* 卡片通用樣式 */
+        .section-card {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 16px;
+            border: 1px solid #EBF4FF;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #EBF4FF;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            color: var(--dark-blue);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 模組 1: 今日作業 */
+        .homework-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #F9FCFF;
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .homework-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-blue);
+            cursor: pointer;
+        }
+
+        .homework-content {
+            flex: 1;
+        }
+
+        .subject-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--soft-blue);
+            color: var(--dark-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+
+        .homework-text {
+            font-size: 0.95rem;
+            color: #444;
+            line-height: 1.4;
+        }
+
+        /* 模組 2: 本月重要事項 */
+        .event-item {
+            display: flex;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F4F8;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            background: var(--soft-blue);
+            color: var(--dark-blue);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            text-align: center;
+            min-width: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .event-date .day {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .event-date .weekday {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .event-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .event-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .event-desc {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        /* 模組 3: 學習照片專區 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: #eee;
+            aspect-ratio: 4 / 3;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+            color: white;
+            padding: 16px 8px 6px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        /* 圖片放大檢視 Modal (Lightbox) */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .lightbox img {
+            max-width: 95%;
+            max-height: 80vh;
+            border-radius: 12px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頁頭 -->
+    <header>
+        <h1><i class="fa-solid fa-cloud"></i> 普林斯頓班級日誌</h1>
+        <p>歡迎來到學習紀錄專區！陪孩子一起快樂成長</p>
+    </header>
+
+    <main>
+        <!-- 分頁選單 -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('homework')">
+                <i class="fa-solid fa-book-open"></i> 今日作業
+            </button>
+            <button class="tab-btn" onclick="switchTab('events')">
+                <i class="fa-regular fa-calendar-check"></i> 本月事項
+            </button>
+            <button class="tab-btn" onclick="switchTab('photos')">
+                <i class="fa-solid fa-camera-retro"></i> 學習照片
+            </button>
+        </nav>
+
+        <!-- 1. 今日作業區塊 -->
+        <section id="homework" class="section-card active">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fa-solid fa-pen-ruler" style="color:#89CFF0;"></i> 今日功課清單</span>
+                    <span style="font-size:0.8rem; color:#888;" id="current-date">2026/10/04</span>
+                </div>
+
+                <div class="homework-item">
+                    <input type="checkbox" id="hw1">
+                    <div class="homework-content">
+                        <span class="subject-tag">英文 KET</span>
+                        <div class="homework-text">完成 Unit 4 單字複習單，並朗讀課文一遍。</div>
+                    </div>
+                </div>
+
+                <div class="homework-item">
+                    <input type="checkbox" id="hw2">
+                    <div class="homework-content">
+                        <span class="subject-tag">閱讀</span>
+                        <div class="homework-text">閱讀繪本《The Very Hungry Caterpillar》第 1-5 頁。</div>
+                    </div>
+                </div>
+
+                <div class="homework-item">
+                    <input type="checkbox" id="hw3">
+                    <div class="homework-content">
+                        <span class="subject-tag">生活提醒</span>
+                        <div class="homework-text">請準備明日美勞課需要的彩繪彩色筆與剪刀。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 本月重要事項區塊 -->
+        <section id="events" class="section-card">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fa-solid fa-calendar-days" style="color:#89CFF0;"></i> 10月 行事曆與提醒</span>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">
+                        <span class="day">10</span>
+                        <span class="weekday">週六</span>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">雙十國慶放假一日</div>
+                        <div class="event-desc">全校放假，作業請於下週一繳交。</div>
+                    </div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">
+                        <span class="day">15</span>
+                        <span class="weekday">週四</span>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">戶外教學活動</div>
+                        <div class="event-desc">請穿著體育服、運動鞋並攜帶小水壺。</div>
+                    </div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">
+                        <span class="day">30</span>
+                        <span class="weekday">週五</span>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">萬聖節扮裝 Party</div>
+                        <div class="event-desc">歡迎小朋友著變裝服飾到校參加活動！</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 學習照片專區塊 -->
+        <section id="photos" class="section-card">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fa-solid fa-images" style="color:#89CFF0;"></i> 本週精彩側拍</span>
+                </div>
+
+                <div class="gallery-grid">
+                    <!-- 替換 src 為您的照片網址即可 -->
+                    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600')">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600" alt="閱讀時間">
+                        <div class="gallery-caption">英文繪本閱讀角</div>
+                    </div>
+
+                    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600')">
+                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600" alt="課堂互動">
+                        <div class="gallery-caption">團體小組討論</div>
+                    </div>
+
+                    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600')">
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600" alt="戶外活動">
+                        <div class="gallery-caption">戶外體能闖關</div>
+                    </div>
+
+                    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600')">
+                        <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600" alt="手作課程">
+                        <div class="gallery-caption">美術手作創意課</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lightbox 圖片預覽 -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="放大照片">
+    </div>
+
+    <script>
+        // Tab 切換邏輯
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.section-card').forEach(card => card.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Lightbox 點擊放大 logic
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
